@@ -62,6 +62,7 @@ export enum WebSearchProvider {
   Firecrawl = 'firecrawl',
   Linkup = 'linkup',
   Parallel = 'parallel',
+  Perplexity = 'perplexity',
   Querit = 'querit',
   Search1API = 'search1api',
   SearchApi = 'searchapi',
