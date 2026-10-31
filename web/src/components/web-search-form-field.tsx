@@ -19,6 +19,7 @@ import exaLogo from '@/assets/exa.png';
 import firecrawlLogo from '@/assets/firecrawl.png';
 import linkupLogo from '@/assets/linkup.png';
 import parallelLogo from '@/assets/svg/parallel.svg';
+import perplexityLogo from '@/assets/svg/perplexity.svg';
 import queritLogo from '@/assets/querit.png';
 import search1apiLogo from '@/assets/search1api.png';
 import searchapiLogo from '@/assets/searchapi.png';
@@ -65,6 +66,11 @@ const webSearchProviderCatalog = [
     name: 'Parallel',
     logo: parallelLogo,
     value: WebSearchProvider.Parallel,
+  },
+  {
+    name: 'Perplexity',
+    logo: perplexityLogo,
+    value: WebSearchProvider.Perplexity,
   },
   {
     name: 'Querit',
@@ -153,6 +159,12 @@ const providerKeyConfig = {
     tip: 'parallelApiKeyTip',
     placeholder: 'parallelApiKeyMessage',
     helpUrl: 'https://platform.parallel.ai',
+  },
+  [WebSearchProvider.Perplexity]: {
+    name: 'prompt_config.perplexity_api_key',
+    tip: 'perplexityApiKeyTip',
+    placeholder: 'perplexityApiKeyMessage',
+    helpUrl: 'https://www.perplexity.ai/account/api/keys',
   },
   [WebSearchProvider.Querit]: {
     name: 'prompt_config.querit_api_key',
