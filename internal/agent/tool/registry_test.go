@@ -48,6 +48,7 @@ func TestBuildByName_CanvasComponentNames(t *testing.T) {
 		{name: "CodeExec", wantToolName: "execute_code"},
 		{name: "GoogleScholar", wantToolName: "google_scholar_search"},
 		{name: "KeenableSearch", wantToolName: "keenable_search"},
+		{name: "PerplexitySearch", wantToolName: "perplexity_search"},
 		{name: "QueritContents", wantToolName: "querit_contents"},
 		{name: "QueritSearch", wantToolName: "querit_search"},
 		{name: "Search1APICrawl", wantToolName: "search1api_crawl"},
@@ -195,7 +196,7 @@ func TestBuildAll_AllRegisteredTools(t *testing.T) {
 	names := []string{
 		"akshare", "arxiv", "bgpt", "code_exec", "crawler", "deepl",
 		"duckduckgo", "email", "exesql", "execute_sql", "github", "google",
-		"google_scholar", "google_scholar_search", "jin10", "keenable", "pubmed", "qweather",
+		"google_scholar", "google_scholar_search", "jin10", "keenable", "perplexity", "pubmed", "qweather",
 		"querit", "querit_contents", "querit_search",
 		"retrieval", "search_my_dataset", "search_my_dateset", "search1api", "search1api_crawl", "searxng", "sofya",
 		"tavily", "tavily_extract", "tushare", "web_crawler", "wencai", "wikipedia", "wikipedia_search",
@@ -233,6 +234,35 @@ func TestBuildAll_AllRegisteredTools(t *testing.T) {
 	}
 }
 
+// TestBuildTushareTool_NodeParams pins the node-level credential channel:
+// the token comes from tool_params, an empty set still builds (Invoke reports
+// the missing configuration), and a non-string token is rejected.
+func TestBuildTushareTool_NodeParams(t *testing.T) {
+	t.Parallel()
+
+	built, err := BuildByName("tushare", map[string]any{"token": "T-node"})
+	if err != nil {
+		t.Fatalf("BuildByName(tushare) with token: %v", err)
+	}
+	tool, ok := built.(*TushareTool)
+	if !ok {
+		t.Fatalf("tool type = %T, want *TushareTool", built)
+	}
+	if tool.defaults.Token != "T-node" {
+		t.Fatalf("defaults.Token = %q, want T-node", tool.defaults.Token)
+	}
+
+	if _, err = BuildByName("tushare", map[string]any{}); err != nil {
+		t.Fatalf("BuildByName(tushare) without params: %v", err)
+	}
+
+	if _, err = BuildByName("tushare", map[string]any{"token": 1}); err == nil {
+		t.Fatal("expected a type error for a non-string token")
+	} else if !strings.Contains(err.Error(), "string node-level param token") {
+		t.Fatalf("err = %q, want the node-level token type error", err.Error())
+	}
+}
+
 func TestBuildAll_ExeSQLRequiresNodeParams(t *testing.T) {
 	_, err := BuildAll([]string{"execute_sql"}, nil)
 	if err == nil {
@@ -259,7 +289,7 @@ func TestToolRegistry_SchemasAreComplete(t *testing.T) {
 	names := []string{
 		"akshare", "arxiv", "bgpt", "code_exec", "crawler", "deepl",
 		"duckduckgo", "email", "execute_sql", "exesql", "github", "google",
-		"google_scholar", "google_scholar_search", "jin10", "keenable", "pubmed", "qweather",
+		"google_scholar", "google_scholar_search", "jin10", "keenable", "perplexity", "pubmed", "qweather",
 		"querit", "querit_contents", "querit_search",
 		"retrieval", "search_my_dataset", "search_my_dateset", "search1api", "search1api_crawl", "searxng", "sofya",
 		"tavily", "tavily_extract", "tushare", "web_crawler", "wencai", "wikipedia", "wikipedia_search",
